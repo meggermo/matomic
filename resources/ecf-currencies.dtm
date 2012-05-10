@@ -1,0 +1,7 @@
+[
+ ;; Currencies
+ {:db/ident :ecf.currency/EUR :ecf.currency/iso-code "EUR" :ecf.currency/decimals 4 :db/id #db/id[:db.part/user]}
+ {:db/ident :ecf.currency/USD :ecf.currency/iso-code "USD" :ecf.currency/decimals 4 :db/id #db/id[:db.part/user]}
+ {:db/ident :ecf.currency/NOK :ecf.currency/iso-code "NOK" :ecf.currency/decimals 4 :db/id #db/id[:db.part/user]}
+ {:db/ident :ecf.currency/JPY :ecf.currency/iso-code "JPY" :ecf.currency/decimals 0 :db/id #db/id[:db.part/user]}
+]

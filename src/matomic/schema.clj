@@ -1,15 +1,17 @@
-;; #Matomic Schemacgg;; Example code:  
+;; #Matomic Schema
+;; Functions that simplify the programmatic declaration of Datomic schema entities.
+;;
+;; Example code:  
 ;; `(-> (defattr :test :db.type/string)`  
 ;;   `(with-doc "A test attribute")`  
 ;;   `(with-unique-index :db.unique/value)`  
 ;;   `(with-fulltext))`  
 ;;
-(ns matomic.schema
-    (:use [datomic.api :only [tempid]]))
+(ns matomic.schema)
 
 (defmacro defentity
   "Macro that returns a rudimentary Datomic schema map.
-   Each Datomic schema entity that you wish to store in 
+   Each Datomic schema entity that you wish to store in Datomic
    should at least have a unique identity and unique id 
    (in the db partition). And that's what this macro returns."
   [ident]
@@ -29,7 +31,7 @@
 (defn defattr 
   "Returns a map that represents a Datomic schema definition of an attribute.
    Required arguments:  
-    - unique partition identifier  
+    - unique attribute identifier  
     - valueType  
     - cardinality (either one or many)  "
   ([ident valueType cardinality]

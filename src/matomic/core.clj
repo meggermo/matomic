@@ -1,16 +1,36 @@
+;; This namespace is my playground to try out functions defined in the matomic.schema namespace
+;; as well as playing around with Datomic in general.
 (ns matomic.core
     (:use [datomic.api :only [q db] :as d])
     (:require [matomic.schema :as s]))
 
-;; The database URI
-(def uri "datomic:mem://tweets")
-;; create the database
+;; The database URI. It seems sensible to name the database to the context that it will be used in.
+;; In my case, that's the manegement of bank accounts. 
+(def uri "datomic:mem://banking")
+
+;; Now create the database from the uri. In a real application you'll have a persistent database so
+;; normally the database is created only once. Howeveer, an in-memory database always needs to be re-created. 
 (d/create-database uri)
-;; get a connection to the database
+
+;; OK, database is up and running. Now get a connection to the database. Of course, when dealing with a persistent
+;; (non in-memory) database logon creadentials will be required to get a connection. I've not discivered documentation
+;; on hot to do that yes on the Datomic web-site though.
 (def conn (d/connect uri))
-;; get the transaction report queue
+
+;; Get the transaction report queue. I'm not using this at the moment, but I would like to explore the possibillities
+;; of this queue. Need to read some more about it.
 (def queue (d/tx-report-queue conn))
 
+;; Currently my schema definition is in this namespace. This is to see if it is worth the effort to define the schema
+;; programatically with my utility functions.
+;; The schema consists of the following entities:  
+;; - Currency  
+;; - Bank  
+;; - Company  
+;; - Account  
+;; The account has references to a currency, a bank and a company,
+;; since an account is holding money in one currency and is registed at a bank and
+;; is a owned (in my case) by a company.
 (def ecf-schema [
 ;; Currency
 (-> (s/defattr :ecf.currency/iso-code :db.type/string)
@@ -39,54 +59,24 @@
     (s/with-doc "The parent company of this company"))])
 @(d/transact conn ecf-schema)
 
-(def ecf-currencies [
- {:db/ident :ecf.currency/EUR :ecf.currency/iso-code "EUR" :ecf.currency/decimals 4 :db/id #db/id[:db.part/user]}
- {:db/ident :ecf.currency/USD :ecf.currency/iso-code "USD" :ecf.currency/decimals 4 :db/id #db/id[:db.part/user]}
- {:db/ident :ecf.currency/NOK :ecf.currency/iso-code "NOK" :ecf.currency/decimals 4 :db/id #db/id[:db.part/user]}
- {:db/ident :ecf.currency/JPY :ecf.currency/iso-code "JPY" :ecf.currency/decimals 0 :db/id #db/id[:db.part/user]}
-])
-@(d/transact conn ecf-currencies)
+;; Now that the schema is in place we can fill it with some data.
+;; First I load the root data for the currencies.
+;; Each currency is labeled with an :db/ident to make it possible to refer to a currency
+;; via qualified enumerations, e.g. :ecf.currency/EUR.
+@(d/transact conn (read-string (slurp "resources/ecf-currencies.dtm")))
+;; And then load the rest of the data.
+@(d/transact conn (read-string (slurp "resources/ecf-data.dtm")))
 
-(def ecf-data [
- {:ecf.bank/bic "BKMGNL20" :db/id #db/id[:db.part/user -2000]}
- {:ecf.bank/bic "BKMGNL21" :db/id #db/id[:db.part/user -2001]}
- {:ecf.bank/bic "BKMGNL22" :db/id #db/id[:db.part/user -2002]}
- {:ecf.bank/bic "BKMGNL23" :db/id #db/id[:db.part/user -2003]}
- {:ecf.bank/bic "BKMGNL24" :db/id #db/id[:db.part/user -2004]}
- {:ecf.company/name "HEEREMA HOLDING" :db/id #db/id[:db.part/user -3000]}
- {:ecf.company/name "HEEREMA EUROPE"  :db/id #db/id[:db.part/user -3001] :ecf.company/parent #db/id[:db.part/user -3000]}
- {:ecf.company/name "HEEREMA ASIA"    :db/id #db/id[:db.part/user -3002] :ecf.company/parent #db/id[:db.part/user -3000]}
- {:ecf.account/id "ACC-4000-EUR-20" :db/id #db/id[:db.part/user -4000] :ecf.account/owner #db/id[:db.part/user -3000]
-  :ecf.account/currency :ecf.currency/EUR :ecf.account/bank #db/id[:db.part/user -2000]}
- {:ecf.account/id "ACC-4001-USD-20" :db/id #db/id[:db.part/user -4001] :ecf.account/owner #db/id[:db.part/user -3000]
-  :ecf.account/currency :ecf.currency/USD :ecf.account/bank #db/id[:db.part/user -2000]}
- {:ecf.account/id "ACC-4002-NOK-20" :db/id #db/id[:db.part/user -4002] :ecf.account/owner #db/id[:db.part/user -3000]
-  :ecf.account/currency :ecf.currency/NOK :ecf.account/bank #db/id[:db.part/user -2000]}
- {:ecf.account/id "ACC-4003-JPY-20" :db/id #db/id[:db.part/user -4003] :ecf.account/owner #db/id[:db.part/user -3000]
-  :ecf.account/currency :ecf.currency/JPY :ecf.account/bank #db/id[:db.part/user -2001]}
- {:ecf.account/id "ACC-4010-EUR-21" :db/id #db/id[:db.part/user -4010] :ecf.account/owner #db/id[:db.part/user -3000]
-  :ecf.account/currency :ecf.currency/EUR :ecf.account/bank #db/id[:db.part/user -2001]}
- {:ecf.account/id "ACC-4011-USD-21" :db/id #db/id[:db.part/user -4011] :ecf.account/owner #db/id[:db.part/user -3000]
-  :ecf.account/currency :ecf.currency/USD :ecf.account/bank #db/id[:db.part/user -2001]}
- {:ecf.account/id "ACC-4012-NOK-21" :db/id #db/id[:db.part/user -4012] :ecf.account/owner #db/id[:db.part/user -3000]
-  :ecf.account/currency :ecf.currency/NOK  :ecf.account/bank #db/id[:db.part/user -2001]}
- {:ecf.account/id "ACC-4013-JPY-21" :db/id #db/id[:db.part/user -4013] :ecf.account/owner #db/id[:db.part/user -3000]
-  :ecf.account/currency :ecf.currency/JPY :ecf.account/bank #db/id[:db.part/user -2001]}
- {:ecf.account/id "ACC-4020-EUR-21" :db/id #db/id[:db.part/user -4020] :ecf.account/owner #db/id[:db.part/user -3001]
-  :ecf.account/currency :ecf.currency/EUR :ecf.account/bank #db/id[:db.part/user -2001]}
- {:ecf.account/id "ACC-4021-USD-21" :db/id #db/id[:db.part/user -4021] :ecf.account/owner #db/id[:db.part/user -3001]
-  :ecf.account/currency :ecf.currency/USD :ecf.account/bank #db/id[:db.part/user -2001]}
- {:ecf.account/id "ACC-4022-NOK-21" :db/id #db/id[:db.part/user -4022] :ecf.account/owner #db/id[:db.part/user -3001]
-  :ecf.account/currency :ecf.currency/NOK :ecf.account/bank #db/id[:db.part/user -2001]}
- {:ecf.account/id "ACC-4023-JPY-21" :db/id #db/id[:db.part/user -4023] :ecf.account/owner #db/id[:db.part/user -3001]
-  :ecf.account/currency :ecf.currency/JPY :ecf.account/bank #db/id[:db.part/user -2001]}
-])
-@(d/transact conn ecf-data)
-
+;; This function maps the given sequence of lists (or any other sequeble type) to a map, where the key
+;; is the first element and the value is the rest of the list. The assuption therefore is that each
+;; element in the seq is a seq.
 (defn map-by-first [seq]
   (letfn [(f [m [k & v]]
              (assoc m k (into v (m k))))]
          (reduce f {} seq)))
+
+;; With this function we can now find all accounts per currency and return it as a map
+;; of accounts per currency.
 (map-by-first (vec (q '[:find ?code ?id :where
         [?a :ecf.account/id ?id]
         [?a :ecf.account/currency ?c]

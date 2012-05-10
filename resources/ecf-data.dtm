@@ -1,0 +1,38 @@
+
+[
+ ;; Banks
+ {:ecf.bank/bic "BANKNL20" :db/id #db/id[:db.part/user -2000]}
+ {:ecf.bank/bic "BANKNL21" :db/id #db/id[:db.part/user -2001]}
+ {:ecf.bank/bic "BANKNL22" :db/id #db/id[:db.part/user -2002]}
+ {:ecf.bank/bic "BANKNL23" :db/id #db/id[:db.part/user -2003]}
+ {:ecf.bank/bic "BANKNL24" :db/id #db/id[:db.part/user -2004]}
+ ;; Companies
+ {:ecf.company/name "COMPANY HOLDING" :db/id #db/id[:db.part/user -3000]}
+ {:ecf.company/name "COMPANY EUROPE"  :db/id #db/id[:db.part/user -3001] :ecf.company/parent #db/id[:db.part/user -3000]}
+ {:ecf.company/name "COMPANY ASIA"    :db/id #db/id[:db.part/user -3002] :ecf.company/parent #db/id[:db.part/user -3000]}
+ ;; Accounts
+ {:ecf.account/id "ACC-4000-EUR-20" :db/id #db/id[:db.part/user -4000] :ecf.account/owner #db/id[:db.part/user -3000]
+  :ecf.account/currency :ecf.currency/EUR :ecf.account/bank #db/id[:db.part/user -2000]}
+ {:ecf.account/id "ACC-4001-USD-20" :db/id #db/id[:db.part/user -4001] :ecf.account/owner #db/id[:db.part/user -3000]
+  :ecf.account/currency :ecf.currency/USD :ecf.account/bank #db/id[:db.part/user -2000]}
+ {:ecf.account/id "ACC-4002-NOK-20" :db/id #db/id[:db.part/user -4002] :ecf.account/owner #db/id[:db.part/user -3000]
+  :ecf.account/currency :ecf.currency/NOK :ecf.account/bank #db/id[:db.part/user -2000]}
+ {:ecf.account/id "ACC-4003-JPY-20" :db/id #db/id[:db.part/user -4003] :ecf.account/owner #db/id[:db.part/user -3000]
+  :ecf.account/currency :ecf.currency/JPY :ecf.account/bank #db/id[:db.part/user -2001]}
+ {:ecf.account/id "ACC-4010-EUR-21" :db/id #db/id[:db.part/user -4010] :ecf.account/owner #db/id[:db.part/user -3000]
+  :ecf.account/currency :ecf.currency/EUR :ecf.account/bank #db/id[:db.part/user -2001]}
+ {:ecf.account/id "ACC-4011-USD-21" :db/id #db/id[:db.part/user -4011] :ecf.account/owner #db/id[:db.part/user -3000]
+  :ecf.account/currency :ecf.currency/USD :ecf.account/bank #db/id[:db.part/user -2001]}
+ {:ecf.account/id "ACC-4012-NOK-21" :db/id #db/id[:db.part/user -4012] :ecf.account/owner #db/id[:db.part/user -3000]
+  :ecf.account/currency :ecf.currency/NOK  :ecf.account/bank #db/id[:db.part/user -2001]}
+ {:ecf.account/id "ACC-4013-JPY-21" :db/id #db/id[:db.part/user -4013] :ecf.account/owner #db/id[:db.part/user -3000]
+  :ecf.account/currency :ecf.currency/JPY :ecf.account/bank #db/id[:db.part/user -2001]}
+ {:ecf.account/id "ACC-4020-EUR-21" :db/id #db/id[:db.part/user -4020] :ecf.account/owner #db/id[:db.part/user -3001]
+  :ecf.account/currency :ecf.currency/EUR :ecf.account/bank #db/id[:db.part/user -2001]}
+ {:ecf.account/id "ACC-4021-USD-21" :db/id #db/id[:db.part/user -4021] :ecf.account/owner #db/id[:db.part/user -3001]
+  :ecf.account/currency :ecf.currency/USD :ecf.account/bank #db/id[:db.part/user -2001]}
+ {:ecf.account/id "ACC-4022-NOK-21" :db/id #db/id[:db.part/user -4022] :ecf.account/owner #db/id[:db.part/user -3001]
+  :ecf.account/currency :ecf.currency/NOK :ecf.account/bank #db/id[:db.part/user -2001]}
+ {:ecf.account/id "ACC-4023-JPY-21" :db/id #db/id[:db.part/user -4023] :ecf.account/owner #db/id[:db.part/user -3001]
+  :ecf.account/currency :ecf.currency/JPY :ecf.account/bank #db/id[:db.part/user -2001]}
+]
