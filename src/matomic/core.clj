@@ -33,36 +33,36 @@
 ;; is a owned (in my case) by a company.
 (def ecf-schema [
 ;; Currency
-(-> (s/defattr :ecf.currency/iso-code :db.type/string)
+(-> (s/defattr :currency/iso-code :db.type/string)
     (s/with-doc "The iso code of the currency")
     (s/with-unique-index :db.unique/value))
-(-> (s/defattr :ecf.currency/decimals :db.type/long)
+(-> (s/defattr :currency/decimals :db.type/long)
     (s/with-doc "The number of decimals of the currency"))
 ;; Bank
-(-> (s/defattr :ecf.bank/bic :db.type/string)
-    (s/with-doc "SWIFT code of the bank")
+(-> (s/defattr :bank/bic :db.type/string)
+    (s/with-doc "Bank identification code of the bank (SWIFT address)")
     (s/with-unique-index :db.unique/value))
 ;; Account
-(-> (s/defattr :ecf.account/id :db.type/string)
+(-> (s/defattr :account/id :db.type/string)
     (s/with-doc "The account identification known in the external world"))
-(-> (s/defattr :ecf.account/bank :db.type/ref)
+(-> (s/defattr :account/bank :db.type/ref)
     (s/with-doc "Reference to the bank that owns this account"))
-(-> (s/defattr :ecf.account/currency :db.type/ref)
+(-> (s/defattr :account/currency :db.type/ref)
     (s/with-doc "Reference to the currency of this account"))
-(-> (s/defattr :ecf.account/owner :db.type/ref)
+(-> (s/defattr :account/owner :db.type/ref)
     (s/with-doc "The owner of this account"))
 ;; Company
-(-> (s/defattr :ecf.company/name :db.type/string)
+(-> (s/defattr :company/name :db.type/string)
     (s/with-doc "The unqiue name of the company")
     (s/with-unique-index :db.unique/value))
-(-> (s/defattr :ecf.company/parent :db.type/ref)
+(-> (s/defattr :company/parent :db.type/ref)
     (s/with-doc "The parent company of this company"))])
 @(d/transact conn ecf-schema)
 
 ;; Now that the schema is in place we can fill it with some data.
 ;; First I load the root data for the currencies.
 ;; Each currency is labeled with an :db/ident to make it possible to refer to a currency
-;; via qualified enumerations, e.g. :ecf.currency/EUR.
+;; via qualified enumerations, e.g. :currency/EUR.
 @(d/transact conn (read-string (slurp "resources/ecf-currencies.dtm")))
 ;; And then load the rest of the data.
 @(d/transact conn (read-string (slurp "resources/ecf-data.dtm")))
@@ -78,9 +78,9 @@
 ;; With this function we can now find all accounts per currency and return it as a map
 ;; of accounts per currency.
 (map-by-first (vec (q '[:find ?code ?id :where
-        [?a :ecf.account/id ?id]
-        [?a :ecf.account/currency ?c]
-        [?a :ecf.account/owner ?o]
-        [?c :ecf.currency/iso-code ?code]]
+        [?a :account/id ?id]
+        [?a :account/currency ?c]
+        [?a :account/owner ?o]
+        [?c :currency/iso-code ?code]]
    (db conn))))
 
