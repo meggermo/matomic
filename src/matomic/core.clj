@@ -84,3 +84,26 @@
         [?c :currency/iso-code ?code]]
    (db conn))))
 
+;; Find all names of parent companies
+(vec (q '[:find ?name :where
+          [?c :company/name ?name]
+          [_  :company/parent ?c]]
+        (db conn)))
+
+;; Find all names of child companies
+(vec (q '[:find ?name :where
+          [?c :company/name ?name]
+          [?c :company/parent _]]
+        (db conn)))
+
+;; Find all names of parents and their childs
+;; and print them.
+(doseq [[parent children] 
+        (map-by-first (vec (q '[:find ?pn ?cn :where
+          [?p :company/name ?pn]
+          [?c :company/name ?cn]
+          [?c :company/parent ?p]]
+     (db conn))))]
+       (println "Parent: " parent)
+       (println "  Children:" children))
+

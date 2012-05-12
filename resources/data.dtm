@@ -5,10 +5,35 @@
  {:bank/bic "BANKNL22" :db/id #db/id[:db.part/user -2002]}
  {:bank/bic "BANKNL23" :db/id #db/id[:db.part/user -2003]}
  {:bank/bic "BANKNL24" :db/id #db/id[:db.part/user -2004]}
+
  ;; Companies
- {:company/name "COMPANY HOLDING" :db/id #db/id[:db.part/user -3000]}
- {:company/name "COMPANY EUROPE"  :db/id #db/id[:db.part/user -3001] :company/parent #db/id[:db.part/user -3000]}
- {:company/name "COMPANY ASIA"    :db/id #db/id[:db.part/user -3002] :company/parent #db/id[:db.part/user -3000]}
+ {:company/name "COMPANY-0 HOLDING" :db/id #db/id[:db.part/user -3000]}
+ {:company/name "COMPANY-0 EUROPE"  :db/id #db/id[:db.part/user -3001] :company/parent #db/id[:db.part/user -3000]}
+ {:company/name "COMPANY-0 ASIA"    :db/id #db/id[:db.part/user -3002] :company/parent #db/id[:db.part/user -3000]}
+
+ {:company/name "COMPANY-1 HOLDING" :db/id #db/id[:db.part/user -3010]}
+ {:company/name "COMPANY-1 EUROPE"  :db/id #db/id[:db.part/user -3011] :company/parent #db/id[:db.part/user -3010]}
+ {:company/name "COMPANY-1 ASIA"    :db/id #db/id[:db.part/user -3012] :company/parent #db/id[:db.part/user -3010]}
+ {:company/name "COMPANY-1 GB"      :db/id #db/id[:db.part/user -3013] :company/parent #db/id[:db.part/user -3011]}
+ {:company/name "COMPANY-1 FR"      :db/id #db/id[:db.part/user -3014] :company/parent #db/id[:db.part/user -3011]}
+ {:company/name "COMPANY-1 JP"      :db/id #db/id[:db.part/user -3015] :company/parent #db/id[:db.part/user -3012]}
+ {:company/name "COMPANY-1 CH"      :db/id #db/id[:db.part/user -3016] :company/parent #db/id[:db.part/user -3012]}
+ {:company/name "COMPANY-1 SK"      :db/id #db/id[:db.part/user -3017] :company/parent #db/id[:db.part/user -3012]}
+
+ {:company/name "COMPANY-2 HOLDING" :db/id #db/id[:db.part/user -3020]}
+ {:company/name "COMPANY-2 EUROPE"  :db/id #db/id[:db.part/user -3021] :company/parent #db/id[:db.part/user -3020]}
+ {:company/name "COMPANY-2 ASIA"    :db/id #db/id[:db.part/user -3022] :company/parent #db/id[:db.part/user -3020]}
+ {:company/name "COMPANY-2 GB"      :db/id #db/id[:db.part/user -3023] :company/parent #db/id[:db.part/user -3021]}
+ {:company/name "COMPANY-2 FR"      :db/id #db/id[:db.part/user -3024] :company/parent #db/id[:db.part/user -3021]}
+ {:company/name "COMPANY-2 JP"      :db/id #db/id[:db.part/user -3025] :company/parent #db/id[:db.part/user -3022]}
+ {:company/name "COMPANY-2 CH"      :db/id #db/id[:db.part/user -3026] :company/parent #db/id[:db.part/user -3022]}
+ {:company/name "COMPANY-2 SK"      :db/id #db/id[:db.part/user -3027] :company/parent #db/id[:db.part/user -3022]}
+
+ {:company/name "COMPANY-2 CH-NO"   :db/id #db/id[:db.part/user -3028] :company/parent #db/id[:db.part/user -3026]}
+ {:company/name "COMPANY-2 CH-EA"   :db/id #db/id[:db.part/user -3029] :company/parent #db/id[:db.part/user -3026]}
+ {:company/name "COMPANY-2 CH-SO"   :db/id #db/id[:db.part/user -3030] :company/parent #db/id[:db.part/user -3026]}
+ {:company/name "COMPANY-2 CH-WE"   :db/id #db/id[:db.part/user -3031] :company/parent #db/id[:db.part/user -3026]}
+
  ;; Accounts
  {:account/id "ACC-4000-EUR-20" :db/id #db/id[:db.part/user -4000] :account/owner #db/id[:db.part/user -3000]
   :account/currency :currency/EUR :account/bank #db/id[:db.part/user -2000]}

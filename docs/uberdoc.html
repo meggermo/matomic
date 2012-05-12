@@ -3052,7 +3052,7 @@ The schema consists of the following entities: <br />
 The account has references to a currency, a bank and a company,
 since an account is holding money in one currency and is registed at a bank and
 is a owned (in my case) by a company.</p>
-</td><td class="codes"><pre class="brush: clojure">(def ecf-schema [
+</td><td class="codes"><pre class="brush: clojure">(def schema [
 ;; Currency
 (-&gt; (s/defattr :currency/iso-code :db.type/string)
     (s/with-doc &quot;The iso code of the currency&quot;)
@@ -3078,12 +3078,12 @@ is a owned (in my case) by a company.</p>
     (s/with-unique-index :db.unique/value))
 (-&gt; (s/defattr :company/parent :db.type/ref)
     (s/with-doc &quot;The parent company of this company&quot;))])
-@(d/transact conn ecf-schema)</pre></td></tr><tr><td class="docs"><p>Now that the schema is in place we can fill it with some data.
+@(d/transact conn schema)</pre></td></tr><tr><td class="docs"><p>Now that the schema is in place we can fill it with some data.
 First I load the root data for the currencies.
 Each currency is labeled with an :db/ident to make it possible to refer to a currency
 via qualified enumerations, e.g. :currency/EUR.</p>
-</td><td class="codes"><pre class="brush: clojure">@(d/transact conn (read-string (slurp &quot;resources/ecf-currencies.dtm&quot;)))</pre></td></tr><tr><td class="docs"><p>And then load the rest of the data.</p>
-</td><td class="codes"><pre class="brush: clojure">@(d/transact conn (read-string (slurp &quot;resources/ecf-data.dtm&quot;)))</pre></td></tr><tr><td class="docs"><p>This function maps the given sequence of lists (or any other sequeble type) to a map, where the key
+</td><td class="codes"><pre class="brush: clojure">@(d/transact conn (read-string (slurp &quot;resources/currencies.dtm&quot;)))</pre></td></tr><tr><td class="docs"><p>And then load the rest of the data.</p>
+</td><td class="codes"><pre class="brush: clojure">@(d/transact conn (read-string (slurp &quot;resources/data.dtm&quot;)))</pre></td></tr><tr><td class="docs"><p>This function maps the given sequence of lists (or any other sequeble type) to a map, where the key
 is the first element and the value is the rest of the list. The assuption therefore is that each
 element in the seq is a seq.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn map-by-first [seq]
@@ -3096,7 +3096,24 @@ of accounts per currency.</p>
         [?a :account/currency ?c]
         [?a :account/owner ?o]
         [?c :currency/iso-code ?code]]
-   (db conn))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#matomic.schema" name="matomic.schema"><h1 class="project-name">matomic.schema</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><h1>Matomic Schema</h1>
+   (db conn))))</pre></td></tr><tr><td class="docs"><p>Find all names of parent companies</p>
+</td><td class="codes"><pre class="brush: clojure">(vec (q '[:find ?name :where
+          [?c :company/name ?name]
+          [_  :company/parent ?c]]
+        (db conn)))</pre></td></tr><tr><td class="docs"><p>Find all names of child companies</p>
+</td><td class="codes"><pre class="brush: clojure">(vec (q '[:find ?name :where
+          [?c :company/name ?name]
+          [?c :company/parent _]]
+        (db conn)))</pre></td></tr><tr><td class="docs"><p>Find all names of parents and their childs
+and print them.</p>
+</td><td class="codes"><pre class="brush: clojure">(doseq [[parent children] 
+        (map-by-first (vec (q '[:find ?pn ?cn :where
+          [?p :company/name ?pn]
+          [?c :company/name ?cn]
+          [?c :company/parent ?p]]
+     (db conn))))]
+       (println &quot;Parent: &quot; parent)
+       (println &quot;  Children:&quot; children))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#matomic.schema" name="matomic.schema"><h1 class="project-name">matomic.schema</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><h1>Matomic Schema</h1>
 
 <p>Functions that simplify the programmatic declaration of Datomic schema entities.</p>
 
