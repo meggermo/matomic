@@ -3091,12 +3091,13 @@ element in the seq is a seq.</p>
              (assoc m k (into v (m k))))]
          (reduce f {} seq)))</pre></td></tr><tr><td class="docs"><p>With this function we can now find all accounts per currency and return it as a map
 of accounts per currency.</p>
-</td><td class="codes"><pre class="brush: clojure">(map-by-first (vec (q '[:find ?code ?id :where
-        [?a :account/id ?id]
-        [?a :account/currency ?c]
-        [?a :account/owner ?o]
-        [?c :currency/iso-code ?code]]
-   (db conn))))</pre></td></tr><tr><td class="docs"><p>Find all names of parent companies</p>
+</td><td class="codes"><pre class="brush: clojure">(map-by-first 
+  (q '[:find ?code ?id :where
+       [?a :account/id ?id]
+       [?a :account/currency ?c]
+       [?a :account/owner ?o]
+       [?c :currency/iso-code ?code]]
+     (db conn)))</pre></td></tr><tr><td class="docs"><p>Find all names of parent companies</p>
 </td><td class="codes"><pre class="brush: clojure">(vec (q '[:find ?name :where
           [?c :company/name ?name]
           [_  :company/parent ?c]]
@@ -3104,14 +3105,15 @@ of accounts per currency.</p>
 </td><td class="codes"><pre class="brush: clojure">(vec (q '[:find ?name :where
           [?c :company/name ?name]
           [?c :company/parent _]]
-        (db conn)))</pre></td></tr><tr><td class="docs"><p>Find all names of parents and their childs
-and print them.</p>
-</td><td class="codes"><pre class="brush: clojure">(doseq [[parent children] 
-        (map-by-first (vec (q '[:find ?pn ?cn :where
-          [?p :company/name ?pn]
-          [?c :company/name ?cn]
-          [?c :company/parent ?p]]
-     (db conn))))]
+        (db conn)))</pre></td></tr><tr><td class="docs"><p>Find all names of parents and their childs</p>
+</td><td class="codes"><pre class="brush: clojure">(def parents-and-children
+  (map-by-first 
+        (q '[:find ?pn ?cn :where 
+                [?p :company/name ?pn] 
+                [?c :company/name ?cn]
+                [?c :company/parent ?p]] 
+              (db conn))))</pre></td></tr><tr><td class="docs"><p>and pretty print them.</p>
+</td><td class="codes"><pre class="brush: clojure">(doseq [[parent children] parents-and-children]
        (println &quot;Parent: &quot; parent)
        (println &quot;  Children:&quot; children))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#matomic.schema" name="matomic.schema"><h1 class="project-name">matomic.schema</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><h1>Matomic Schema</h1>
 

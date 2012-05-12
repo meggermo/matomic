@@ -77,12 +77,13 @@
 
 ;; With this function we can now find all accounts per currency and return it as a map
 ;; of accounts per currency.
-(map-by-first (vec (q '[:find ?code ?id :where
-        [?a :account/id ?id]
-        [?a :account/currency ?c]
-        [?a :account/owner ?o]
-        [?c :currency/iso-code ?code]]
-   (db conn))))
+(map-by-first 
+  (q '[:find ?code ?id :where
+       [?a :account/id ?id]
+       [?a :account/currency ?c]
+       [?a :account/owner ?o]
+       [?c :currency/iso-code ?code]]
+     (db conn)))
 
 ;; Find all names of parent companies
 (vec (q '[:find ?name :where
@@ -97,13 +98,15 @@
         (db conn)))
 
 ;; Find all names of parents and their childs
-;; and print them.
-(doseq [[parent children] 
-        (map-by-first (vec (q '[:find ?pn ?cn :where
-          [?p :company/name ?pn]
-          [?c :company/name ?cn]
-          [?c :company/parent ?p]]
-     (db conn))))]
+(def parents-and-children
+  (map-by-first 
+        (q '[:find ?pn ?cn :where 
+                [?p :company/name ?pn] 
+                [?c :company/name ?cn]
+                [?c :company/parent ?p]] 
+              (db conn))))
+;; and pretty print them.
+(doseq [[parent children] parents-and-children]
        (println "Parent: " parent)
        (println "  Children:" children))
 
