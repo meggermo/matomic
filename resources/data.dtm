@@ -1,4 +1,3 @@
-
 [
  ;; Banks
  {:bank/bic "BANKNL20" :db/id #db/id[:db.part/user -2000]}
@@ -33,6 +32,6 @@
   :account/currency :currency/USD :account/bank #db/id[:db.part/user -2001]}
  {:account/id "ACC-4022-NOK-21" :db/id #db/id[:db.part/user -4022] :account/owner #db/id[:db.part/user -3001]
   :account/currency :currency/NOK :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4023-JPY-21" :db/id #db/id[:db.part/user -4023] :account/owner #db/id[:db.part/user -3001]e
+ {:account/id "ACC-4023-JPY-21" :db/id #db/id[:db.part/user -4023] :account/owner #db/id[:db.part/user -3001]
   :account/currency :currency/JPY :account/bank #db/id[:db.part/user -2001]}
 ]

@@ -31,7 +31,7 @@
 ;; The account has references to a currency, a bank and a company,
 ;; since an account is holding money in one currency and is registed at a bank and
 ;; is a owned (in my case) by a company.
-(def ecf-schema [
+(def schema [
 ;; Currency
 (-> (s/defattr :currency/iso-code :db.type/string)
     (s/with-doc "The iso code of the currency")
@@ -57,15 +57,15 @@
     (s/with-unique-index :db.unique/value))
 (-> (s/defattr :company/parent :db.type/ref)
     (s/with-doc "The parent company of this company"))])
-@(d/transact conn ecf-schema)
+@(d/transact conn schema)
 
 ;; Now that the schema is in place we can fill it with some data.
 ;; First I load the root data for the currencies.
 ;; Each currency is labeled with an :db/ident to make it possible to refer to a currency
 ;; via qualified enumerations, e.g. :currency/EUR.
-@(d/transact conn (read-string (slurp "resources/ecf-currencies.dtm")))
+@(d/transact conn (read-string (slurp "resources/currencies.dtm")))
 ;; And then load the rest of the data.
-@(d/transact conn (read-string (slurp "resources/ecf-data.dtm")))
+@(d/transact conn (read-string (slurp "resources/data.dtm")))
 
 ;; This function maps the given sequence of lists (or any other sequeble type) to a map, where the key
 ;; is the first element and the value is the rest of the list. The assuption therefore is that each
