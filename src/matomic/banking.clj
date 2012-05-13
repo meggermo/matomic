@@ -1,8 +1,9 @@
 ;; This namespace is my playground to try out functions defined in the matomic.schema namespace
 ;; as well as playing around with Datomic in general.
-(ns matomic.core
+(ns matomic.banking
     (:use [datomic.api :only [q db] :as d])
-    (:require [matomic.schema :as s]))
+    (:require [matomic.schema :as s])
+    (:require [matomic.core :as c]))
 
 ;; The database URI. It seems sensible to name the database to the context that it will be used in.
 ;; In my case, that's the manegement of bank accounts. 
@@ -29,7 +30,7 @@
 ;; - Company  
 ;; - Account  
 ;; The account has references to a currency, a bank and a company,
-;; since an account is holding money in one currency and is registed at a bank and
+;; since an account is holding money in one currency and is registered at a bank and
 ;; is a owned (in my case) by a company.
 (def schema [
 ;; Currency
@@ -44,7 +45,8 @@
     (s/with-unique-index :db.unique/value))
 ;; Account
 (-> (s/defattr :account/id :db.type/string)
-    (s/with-doc "The account identification known in the external world"))
+    (s/with-doc "The account identification known in the external world")
+    (s/with-unique-index :db.unique/value))
 (-> (s/defattr :account/bank :db.type/ref)
     (s/with-doc "Reference to the bank that owns this account"))
 (-> (s/defattr :account/currency :db.type/ref)
@@ -67,6 +69,22 @@
 ;; And then load the rest of the data.
 @(d/transact conn (read-string (slurp "resources/data.dtm")))
 
+;; I'm working on a way to make adding data programatically simpler.
+;; I know that data can reside in user defined partitions, so I want
+;; to be able to pass it in as a parameter. Furthermore, since attributes
+;; of type ref point to an id of another attribute, I want those to be mapped too.
+;; That's what the set is for. It contains all keys that have (a negative) id as
+;; value. The with-partition function will map the id to #db/id[:db.part/user id].
+;; Saves a lot of typing. This is an example of how it works:
+(def bank-data 
+  (c/with-partition
+    :db.part/user 
+    #{:db/id :account/bank} 
+    [{:bank/bic   "BANK_0" :db/id -1000}
+     {:account/id "ACCT_0" :db/id -1001 :account/bank -1000 :account/currency :currency/EUR}
+     {:account/id "ACCT_1" :db/id -1002 :account/bank -1000 :account/currency :currency/JPY}]))
+@(d/transact conn bank-data)
+ 
 ;; This function maps the given sequence of lists (or any other sequeble type) to a map, where the key
 ;; is the first element and the value is the rest of the list. The assuption therefore is that each
 ;; element in the seq is a seq.
@@ -81,7 +99,6 @@
   (q '[:find ?code ?id :where
        [?a :account/id ?id]
        [?a :account/currency ?c]
-       [?a :account/owner ?o]
        [?c :currency/iso-code ?code]]
      (db conn)))
 
@@ -110,3 +127,5 @@
        (println "Parent: " parent)
        (println "  Children:" children))
 
+
+ 
