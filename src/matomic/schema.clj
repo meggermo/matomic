@@ -43,6 +43,9 @@
   ([ident valueType]
    (defattr ident valueType :db.cardinality/one)))
 
+(defn defattrs [seq]
+  (vec (map #(assoc % :db.install/_attribute :db.part/db) seq)))
+
 (defn with-doc
   "Associates a :db/doc attribute with m and returns the new map.
    This function can be used for defining attributes and partitions."

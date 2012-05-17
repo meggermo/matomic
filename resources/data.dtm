@@ -41,53 +41,53 @@
  {:company/name "COMPANY-2 CH-WE"   :db/id #db/id[:db.part/user -3031] :company/parent #db/id[:db.part/user -3026]}
 
  ;; Accounts
- {:account/id "ACC-4000-EUR-20" :db/id #db/id[:db.part/user -4000] :account/owner #db/id[:db.part/user -3000]
+ {:account/id "ACC-4000-EUR-20" :db/id #db/id[:db.part/user -4000] 
   :account/currency :currency/EUR :account/bank #db/id[:db.part/user -2000]}
- {:account/id "ACC-4001-USD-20" :db/id #db/id[:db.part/user -4001] :account/owner #db/id[:db.part/user -3000]
+ {:account/id "ACC-4001-USD-20" :db/id #db/id[:db.part/user -4001] 
   :account/currency :currency/USD :account/bank #db/id[:db.part/user -2000]}
- {:account/id "ACC-4002-NOK-20" :db/id #db/id[:db.part/user -4002] :account/owner #db/id[:db.part/user -3000]
+ {:account/id "ACC-4002-NOK-20" :db/id #db/id[:db.part/user -4002] 
   :account/currency :currency/NOK :account/bank #db/id[:db.part/user -2000]}
- {:account/id "ACC-4003-JPY-20" :db/id #db/id[:db.part/user -4003] :account/owner #db/id[:db.part/user -3000]
+ {:account/id "ACC-4003-JPY-20" :db/id #db/id[:db.part/user -4003] 
   :account/currency :currency/JPY :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4010-EUR-21" :db/id #db/id[:db.part/user -4010] :account/owner #db/id[:db.part/user -3000]
+ {:account/id "ACC-4010-EUR-21" :db/id #db/id[:db.part/user -4010] 
   :account/currency :currency/EUR :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4011-USD-21" :db/id #db/id[:db.part/user -4011] :account/owner #db/id[:db.part/user -3000]
+ {:account/id "ACC-4011-USD-21" :db/id #db/id[:db.part/user -4011] 
   :account/currency :currency/USD :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4012-NOK-21" :db/id #db/id[:db.part/user -4012] :account/owner #db/id[:db.part/user -3000]
+ {:account/id "ACC-4012-NOK-21" :db/id #db/id[:db.part/user -4012] 
   :account/currency :currency/NOK  :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4013-JPY-21" :db/id #db/id[:db.part/user -4013] :account/owner #db/id[:db.part/user -3000]
+ {:account/id "ACC-4013-JPY-21" :db/id #db/id[:db.part/user -4013] 
   :account/currency :currency/JPY :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4020-EUR-21" :db/id #db/id[:db.part/user -4020] :account/owner #db/id[:db.part/user -3001]
+ {:account/id "ACC-4020-EUR-21" :db/id #db/id[:db.part/user -4020] 
   :account/currency :currency/EUR :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4021-USD-21" :db/id #db/id[:db.part/user -4021] :account/owner #db/id[:db.part/user -3001]
+ {:account/id "ACC-4021-USD-21" :db/id #db/id[:db.part/user -4021] 
   :account/currency :currency/USD :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4022-NOK-21" :db/id #db/id[:db.part/user -4022] :account/owner #db/id[:db.part/user -3001]
+ {:account/id "ACC-4022-NOK-21" :db/id #db/id[:db.part/user -4022] 
   :account/currency :currency/NOK :account/bank #db/id[:db.part/user -2001]}
- {:account/id "ACC-4023-JPY-21" :db/id #db/id[:db.part/user -4023] :account/owner #db/id[:db.part/user -3001]
+ {:account/id "ACC-4023-JPY-21" :db/id #db/id[:db.part/user -4023] 
   :account/currency :currency/JPY :account/bank #db/id[:db.part/user -2001]}
 
- {:account/id "ACC-4100-EUR-20" :db/id #db/id[:db.part/user -4100] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4100-EUR-20" :db/id #db/id[:db.part/user -4100] 
   :account/currency :currency/EUR :account/bank #db/id[:db.part/user -2010]}
- {:account/id "ACC-4101-USD-20" :db/id #db/id[:db.part/user -4101] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4101-USD-20" :db/id #db/id[:db.part/user -4101] 
   :account/currency :currency/USD :account/bank #db/id[:db.part/user -2010]}
- {:account/id "ACC-4102-NOK-20" :db/id #db/id[:db.part/user -4102] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4102-NOK-20" :db/id #db/id[:db.part/user -4102] 
   :account/currency :currency/NOK :account/bank #db/id[:db.part/user -2010]}
- {:account/id "ACC-4103-JPY-20" :db/id #db/id[:db.part/user -4103] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4103-JPY-20" :db/id #db/id[:db.part/user -4103] 
   :account/currency :currency/JPY :account/bank #db/id[:db.part/user -2010]}
- {:account/id "ACC-4110-EUR-21" :db/id #db/id[:db.part/user -4110] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4110-EUR-21" :db/id #db/id[:db.part/user -4110] 
   :account/currency :currency/EUR :account/bank #db/id[:db.part/user -2011]}
- {:account/id "ACC-4111-USD-21" :db/id #db/id[:db.part/user -4111] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4111-USD-21" :db/id #db/id[:db.part/user -4111] 
   :account/currency :currency/USD :account/bank #db/id[:db.part/user -2011]}
- {:account/id "ACC-4112-NOK-21" :db/id #db/id[:db.part/user -4112] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4112-NOK-21" :db/id #db/id[:db.part/user -4112] 
   :account/currency :currency/NOK :account/bank #db/id[:db.part/user -2011]}
- {:account/id "ACC-4113-JPY-21" :db/id #db/id[:db.part/user -4113] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4113-JPY-21" :db/id #db/id[:db.part/user -4113] 
   :account/currency :currency/JPY :account/bank #db/id[:db.part/user -2011]}
- {:account/id "ACC-4120-EUR-22" :db/id #db/id[:db.part/user -4120] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4120-EUR-22" :db/id #db/id[:db.part/user -4120] 
   :account/currency :currency/EUR :account/bank #db/id[:db.part/user -2012]}
- {:account/id "ACC-4121-USD-22" :db/id #db/id[:db.part/user -4121] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4121-USD-22" :db/id #db/id[:db.part/user -4121] 
   :account/currency :currency/USD :account/bank #db/id[:db.part/user -2012]}
- {:account/id "ACC-4122-NOK-22" :db/id #db/id[:db.part/user -4122] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4122-NOK-22" :db/id #db/id[:db.part/user -4122] 
   :account/currency :currency/NOK :account/bank #db/id[:db.part/user -2012]}
- {:account/id "ACC-4123-JPY-22" :db/id #db/id[:db.part/user -4123] :account/owner #db/id[:db.part/user -3011]
+ {:account/id "ACC-4123-JPY-22" :db/id #db/id[:db.part/user -4123] 
   :account/currency :currency/JPY :account/bank #db/id[:db.part/user -2012]}
 ]

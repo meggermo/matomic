@@ -32,34 +32,40 @@
 ;; The account has references to a currency, a bank and a company,
 ;; since an account is holding money in one currency and is registered at a bank and
 ;; is a owned (in my case) by a company.
-(def schema [
-;; Currency
-(-> (s/defattr :currency/iso-code :db.type/string)
-    (s/with-doc "The iso code of the currency")
-    (s/with-unique-index :db.unique/value))
-(-> (s/defattr :currency/decimals :db.type/long)
-    (s/with-doc "The number of decimals of the currency"))
-;; Bank
-(-> (s/defattr :bank/bic :db.type/string)
-    (s/with-doc "Bank identification code of the bank (SWIFT address)")
-    (s/with-unique-index :db.unique/value))
-;; Account
-(-> (s/defattr :account/id :db.type/string)
-    (s/with-doc "The account identification known in the external world")
-    (s/with-unique-index :db.unique/value))
-(-> (s/defattr :account/bank :db.type/ref)
-    (s/with-doc "Reference to the bank that owns this account"))
-(-> (s/defattr :account/currency :db.type/ref)
-    (s/with-doc "Reference to the currency of this account"))
-(-> (s/defattr :account/owner :db.type/ref)
-    (s/with-doc "The owner of this account"))
-;; Company
-(-> (s/defattr :company/name :db.type/string)
-    (s/with-doc "The unqiue name of the company")
-    (s/with-unique-index :db.unique/value))
-(-> (s/defattr :company/parent :db.type/ref)
-    (s/with-doc "The parent company of this company"))])
-@(d/transact conn schema)
+(def schema 
+ (c/with-partition :db.part/db #{:db/id} [
+  ;; Currency
+ {:db/ident :currency/iso-code :db/cardinality :db.cardinality/one :db/valueType :db.type/string :db/id -1
+  :db/unique :db.unique/value :db/index true
+  :db/doc "The ISO code of the currency"}
+ {:db/ident :currency/decimals :db/cardinality :db.cardinality/one :db/valueType :db.type/long :db/id -2
+  :db/doc "The number of decimals of the currency"}
+  ;; Bank
+ {:db/ident :bank/bic :db/cardinality :db.cardinality/many :db/valueType :db.type/string :db/id -3
+  :db/unique :db.unique/value :db/index true
+  :db/doc "The bank identification code, e.g. the SWIFT address"}
+  ;; Account
+ {:db/ident :account/id :db/cardinality :db.cardinality/one :db/valueType :db.type/string :db/id -4
+  :db/unique :db.unique/value :db/index true
+  :db/doc "The account identification code, e.g. the IBAN code"}
+ {:db/ident :account/bank :db/cardinality :db.cardinality/one :db/valueType :db.type/ref :db/id -5
+  :db/doc "The bank where the account is registered"}
+ {:db/ident :account/currency :db/cardinality :db.cardinality/one :db/valueType :db.type/ref :db/id -6
+  :db/doc "The currency of the account balance"}
+  ;; Account holder, an account can be held by more than one account holder
+ {:db/ident :account-holder/account :db/cardinality :db.cardinality/many :db/valueType :db.type/ref :db/id -7
+  :db/doc "The holder of an account"}
+  ;; Company
+ {:db/ident :company/name :db/cardinality :db.cardinality/one :db/valueType :db.type/string :db/id -8
+  :db/unique :db.unique/value :db/index true
+  :db/doc "The name of a company"}
+ {:db/ident :company/parent :db/cardinality :db.cardinality/one :db/valueType :db.type/ref :db/id -9
+  :db/doc "The parent of a company"}]))
+;; Well, as you can see, declaring the schema this way is boilerplaterish. In my schema namespace I have
+;; some methods that simplify schema definitions. However, they're not yet cooperating with the new
+;; function with-partition that I created for programmatic data declarations. I intend to integrate it 
+;; so that schema declaration is simple(r) too. For now I created the helper fn defattrs to make it work.
+@(d/transact conn (s/defattrs  schema))
 
 ;; Now that the schema is in place we can fill it with some data.
 ;; First I load the root data for the currencies.
@@ -69,7 +75,7 @@
 ;; And then load the rest of the data.
 @(d/transact conn (read-string (slurp "resources/data.dtm")))
 
-;; I'm working on a way to make adding data programatically simpler.
+;; I'm working on a way to make programatically adding data simpler.
 ;; I know that data can reside in user defined partitions, so I want
 ;; to be able to pass it in as a parameter. Furthermore, since attributes
 ;; of type ref point to an id of another attribute, I want those to be mapped too.
@@ -77,9 +83,7 @@
 ;; value. The with-partition function will map the id to #db/id[:db.part/user id].
 ;; Saves a lot of typing. This is an example of how it works:
 (def bank-data 
-  (c/with-partition
-    :db.part/user 
-    #{:db/id :account/bank} 
+  (c/with-partition :db.part/user #{:db/id :account/bank} 
     [{:bank/bic   "BANK_0" :db/id -1000}
      {:account/id "ACCT_0" :db/id -1001 :account/bank -1000 :account/currency :currency/EUR}
      {:account/id "ACCT_1" :db/id -1002 :account/bank -1000 :account/currency :currency/JPY}]))

@@ -16,6 +16,16 @@
   (letfn [(g [[k v]] (if (k s) [k (f v)] [k v]))]
     (into {} (map g m))))
 
+;; TODO: this looks like a more efficient function than replace-values
+;; because it filters the entries that require mapping. 
+(defn assoc-when
+  [m ks f & args]
+  (letfn [(get-val [k] (get m k))
+          (map-val [k] [k (apply f (get-val k) args)])]
+         (reduce 
+           (partial apply assoc) m
+           (map map-val (filter get-val ks)))))
+
 (defn with-partition-fn
   "Returns a function that will replace all values in a map
    with a call to the Datomic tempid function (in the context 
