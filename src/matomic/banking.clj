@@ -32,40 +32,30 @@
 ;; The account has references to a currency, a bank and a company,
 ;; since an account is holding money in one currency and is registered at a bank and
 ;; is a owned (in my case) by a company.
-(def schema 
- (c/with-partition :db.part/db #{:db/id} [
-  ;; Currency
- {:db/ident :currency/iso-code :db/cardinality :db.cardinality/one :db/valueType :db.type/string :db/id -1
-  :db/unique :db.unique/value :db/index true
-  :db/doc "The ISO code of the currency"}
- {:db/ident :currency/decimals :db/cardinality :db.cardinality/one :db/valueType :db.type/long :db/id -2
-  :db/doc "The number of decimals of the currency"}
-  ;; Bank
- {:db/ident :bank/bic :db/cardinality :db.cardinality/many :db/valueType :db.type/string :db/id -3
-  :db/unique :db.unique/value :db/index true
-  :db/doc "The bank identification code, e.g. the SWIFT address"}
-  ;; Account
- {:db/ident :account/id :db/cardinality :db.cardinality/one :db/valueType :db.type/string :db/id -4
-  :db/unique :db.unique/value :db/index true
-  :db/doc "The account identification code, e.g. the IBAN code"}
- {:db/ident :account/bank :db/cardinality :db.cardinality/one :db/valueType :db.type/ref :db/id -5
-  :db/doc "The bank where the account is registered"}
- {:db/ident :account/currency :db/cardinality :db.cardinality/one :db/valueType :db.type/ref :db/id -6
-  :db/doc "The currency of the account balance"}
-  ;; Account holder, an account can be held by more than one account holder
- {:db/ident :account-holder/account :db/cardinality :db.cardinality/many :db/valueType :db.type/ref :db/id -7
-  :db/doc "The holder of an account"}
-  ;; Company
- {:db/ident :company/name :db/cardinality :db.cardinality/one :db/valueType :db.type/string :db/id -8
-  :db/unique :db.unique/value :db/index true
-  :db/doc "The name of a company"}
- {:db/ident :company/parent :db/cardinality :db.cardinality/one :db/valueType :db.type/ref :db/id -9
-  :db/doc "The parent of a company"}]))
-;; Well, as you can see, declaring the schema this way is boilerplaterish. In my schema namespace I have
-;; some methods that simplify schema definitions. However, they're not yet cooperating with the new
-;; function with-partition that I created for programmatic data declarations. I intend to integrate it 
-;; so that schema declaration is simple(r) too. For now I created the helper fn defattrs to make it work.
-@(d/transact conn (s/defattrs  schema))
+(def schema [
+ (-> (s/defattr :currency/iso-code :db.type/string)
+     (s/with-unique-index :db.unique/value)
+     (s/with-doc "The ISO code of the currency"))
+ (-> (s/defattr :currency/decimals :db.type/long)
+     (s/with-doc "The number of decimals of the currency"))
+ (-> (s/defattr :bank/bic :db.type/string)
+     (s/with-unique-index :db.unique/value)
+     (s/with-doc "The bank identification code, e.g. the SWIFT address"))
+ (-> (s/defattr :account/id :db.type/string)
+     (s/with-doc "The account identification code"))
+ (-> (s/defattr :account/currency :db.type/ref)
+     (s/with-doc "The currency of the account's balance"))
+ (-> (s/defattr :account/bank :db.type/ref)
+     (s/with-doc "The bank where the account is registered"))
+ (-> (s/defattr :account-holder/account :db.type/ref :db.cardinality/many)
+     (s/with-doc "The accounts owned by the account-holder"))
+ (-> (s/defattr :company/name :db.type/string)
+     (s/with-unique-index :db.unique/value)
+     (s/with-doc "The name of a company"))
+ (-> (s/defattr :company/parent :db.type/ref)
+     (s/with-doc "The parent of a company"))
+   ])
+@(d/transact conn schema)
 
 ;; Now that the schema is in place we can fill it with some data.
 ;; First I load the root data for the currencies.

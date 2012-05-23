@@ -4,7 +4,7 @@
 
   :dependencies [
     [org.clojure/clojure "1.4.0"]
-    [com.datomic/datomic "0.1.3099"
+    [com.datomic/datomic "0.1.3142"
        :exclusions [org.slf4j/slf4j-nop 
                     org.slf4j/slf4j-log4j12]]
     [ch.qos.logback/logback-classic "1.0.1"]

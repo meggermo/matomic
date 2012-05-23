@@ -8,17 +8,10 @@
   [partition-ident]
   `(partial datomic.api/tempid ~partition-ident))
 
-(defn replace-values 
+(defn assoc-when
   "If the map m contains the key in the key set s
    then the value is replaced with the return value
    of applying f to the value."
-  [f s m]
-  (letfn [(g [[k v]] (if (k s) [k (f v)] [k v]))]
-    (into {} (map g m))))
-
-;; TODO: this looks like a more efficient function than replace-values
-;; because it filters the entries that require mapping. 
-(defn assoc-when
   [m ks f & args]
   (letfn [(get-val [k] (get m k))
           (map-val [k] [k (apply f (get-val k) args)])]
@@ -31,7 +24,8 @@
    with a call to the Datomic tempid function (in the context 
    of the given partition) for the given keys."
   [partition keys] 
-  (partial replace-values (bind-partition partition) keys))
+  (fn [m] 
+      (assoc-when m keys (bind-partition partition))))
 
 (defn with-partition
   "Applies the with-partition-fn to all maps and returns the results
