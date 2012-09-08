@@ -10,12 +10,12 @@
 (def uri "datomic:mem://banking")
 
 ;; Now create the database from the uri. In a real application you'll have a persistent database so
-;; normally the database is created only once. Howeveer, an in-memory database always needs to be re-created. 
+;; normally the database is created only once. However, an in-memory database always needs to be re-created. 
 (d/create-database uri)
 
 ;; OK, database is up and running. Now get a connection to the database. Of course, when dealing with a persistent
 ;; (non in-memory) database logon creadentials will be required to get a connection. I've not discivered documentation
-;; on hot to do that yes on the Datomic web-site though.
+;; on how to do that yet on the Datomic web-site though.
 (def conn (d/connect uri))
 
 ;; Get the transaction report queue. I'm not using this at the moment, but I would like to explore the possibillities
@@ -32,6 +32,9 @@
 ;; The account has references to a currency, a bank and a company,
 ;; since an account is holding money in one currency and is registered at a bank and
 ;; is a owned (in my case) by a company.
+;;
+;; NOTE: Just found out that in the real world it is quite normal to have an account for multiple
+;; currencies, so I might need to reconsider my data model ....
 (def schema [
  (-> (s/defattr :currency/iso-code :db.type/string)
      (s/with-unique-index :db.unique/value)
@@ -71,7 +74,7 @@
 ;; of type ref point to an id of another attribute, I want those to be mapped too.
 ;; That's what the set is for. It contains all keys that have (a negative) id as
 ;; value. The with-partition function will map the id to #db/id[:db.part/user id].
-;; Saves a lot of typing. This is an example of how it works:
+;; Saves a lot of typing. This is an example of how the with-partition function works.
 (def bank-data 
   (c/with-partition :db.part/user #{:db/id :account/bank} 
     [{:bank/bic   "BANK_0" :db/id -1000}
@@ -121,5 +124,3 @@
        (println "Parent: " parent)
        (println "  Children:" children))
 
-
- 

@@ -1,7 +1,9 @@
 [
  ;; Currencies
  {:db/ident :currency/EUR :currency/iso-code "EUR" :currency/decimals 4 :db/id #db/id[:db.part/user]}
+ {:db/ident :currency/GBP :currency/iso-code "GBP" :currency/decimals 4 :db/id #db/id[:db.part/user]}
  {:db/ident :currency/USD :currency/iso-code "USD" :currency/decimals 4 :db/id #db/id[:db.part/user]}
+ {:db/ident :currency/MXD :currency/iso-code "MXD" :currency/decimals 4 :db/id #db/id[:db.part/user]}
  {:db/ident :currency/NOK :currency/iso-code "NOK" :currency/decimals 4 :db/id #db/id[:db.part/user]}
  {:db/ident :currency/JPY :currency/iso-code "JPY" :currency/decimals 0 :db/id #db/id[:db.part/user]}
 ]

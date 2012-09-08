@@ -1,12 +1,13 @@
 ;; This namespace contains functions to simplify programmatic declaration
 ;; of Datomic entities.
-(ns matomic.core)
+(ns matomic.core
+    (use [datomic.api :only [tempid]]))
 
 (defmacro bind-partition
   "Marco that returns a function that binds a parition
    identified by partition-ident to the Datomic tempid function."
   [partition-ident]
-  `(partial datomic.api/tempid ~partition-ident))
+  `(partial tempid ~partition-ident))
 
 (defn assoc-when
   "If the map m contains the key in the key set s

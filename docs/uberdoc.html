@@ -3029,7 +3029,7 @@ net.brehaut.ClojureTools = (function (SH) {
   };
 })(SyntaxHighlighter);
 </script><title>matomic -- Marginalia</title></head><body><table><tr><td class="docs"><div class="header"><h1 class="project-name">matomic</h1><h2 class="project-version">1.0.0-SNAPSHOT</h2><br /><p>My project to explore Datomic</p>
-</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.4.0</td></tr><tr><td class="dep-name">com.datomic/datomic</td><td class="dotted"><hr /></td><td class="dep-version">0.1.3142</td></tr><tr><td class="dep-name">ch.qos.logback/logback-classic</td><td class="dotted"><hr /></td><td class="dep-version">1.0.1</td></tr></table></div><div class="dependencies"><h3>dev dependencies</h3><table><tr><td class="dep-name">lein-marginalia</td><td class="dotted"><hr /></td><td class="dep-version">0.7.0</td></tr></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#matomic.banking">matomic.banking</a></li><li><a href="#matomic.core">matomic.core</a></li><li><a href="#matomic.schema">matomic.schema</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#matomic.banking" name="matomic.banking"><h1 class="project-name">matomic.banking</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>This namespace is my playground to try out functions defined in the matomic.schema namespace
+</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.4.0</td></tr><tr><td class="dep-name">com.datomic/datomic-free</td><td class="dotted"><hr /></td><td class="dep-version">0.8.3488</td></tr><tr><td class="dep-name">ch.qos.logback/logback-classic</td><td class="dotted"><hr /></td><td class="dep-version">1.0.7</td></tr><tr><td class="dep-name">midje</td><td class="dotted"><hr /></td><td class="dep-version">1.4.0</td></tr></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#matomic.banking">matomic.banking</a></li><li><a href="#matomic.core">matomic.core</a></li><li><a href="#matomic.schema">matomic.schema</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#matomic.banking" name="matomic.banking"><h1 class="project-name">matomic.banking</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>This namespace is my playground to try out functions defined in the matomic.schema namespace
 as well as playing around with Datomic in general.</p>
 </td><td class="codes"><pre class="brush: clojure">(ns matomic.banking
     (:use [datomic.api :only [q db] :as d])
@@ -3037,10 +3037,10 @@ as well as playing around with Datomic in general.</p>
     (:require [matomic.core :as c]))</pre></td></tr><tr><td class="docs"><p>The database URI. It seems sensible to name the database to the context that it will be used in.
 In my case, that's the manegement of bank accounts. </p>
 </td><td class="codes"><pre class="brush: clojure">(def uri &quot;datomic:mem://banking&quot;)</pre></td></tr><tr><td class="docs"><p>Now create the database from the uri. In a real application you'll have a persistent database so
-normally the database is created only once. Howeveer, an in-memory database always needs to be re-created. </p>
+normally the database is created only once. However, an in-memory database always needs to be re-created. </p>
 </td><td class="codes"><pre class="brush: clojure">(d/create-database uri)</pre></td></tr><tr><td class="docs"><p>OK, database is up and running. Now get a connection to the database. Of course, when dealing with a persistent
 (non in-memory) database logon creadentials will be required to get a connection. I've not discivered documentation
-on hot to do that yes on the Datomic web-site though.</p>
+on how to do that yet on the Datomic web-site though.</p>
 </td><td class="codes"><pre class="brush: clojure">(def conn (d/connect uri))</pre></td></tr><tr><td class="docs"><p>Get the transaction report queue. I'm not using this at the moment, but I would like to explore the possibillities
 of this queue. Need to read some more about it.</p>
 </td><td class="codes"><pre class="brush: clojure">(def queue (d/tx-report-queue conn))</pre></td></tr><tr><td class="docs"><p>Currently my schema definition is in this namespace. This is to see if it is worth the effort to define the schema
@@ -3053,6 +3053,9 @@ The schema consists of the following entities: <br />
 The account has references to a currency, a bank and a company,
 since an account is holding money in one currency and is registered at a bank and
 is a owned (in my case) by a company.</p>
+
+<p>NOTE: Just found out that in the real world it is quite normal to have an account for multiple
+currencies, so I might need to reconsider my data model ....</p>
 </td><td class="codes"><pre class="brush: clojure">(def schema [
  (-&gt; (s/defattr :currency/iso-code :db.type/string)
      (s/with-unique-index :db.unique/value)
@@ -3087,7 +3090,7 @@ to be able to pass it in as a parameter. Furthermore, since attributes
 of type ref point to an id of another attribute, I want those to be mapped too.
 That's what the set is for. It contains all keys that have (a negative) id as
 value. The with-partition function will map the id to #db/id[:db.part/user id].
-Saves a lot of typing. This is an example of how it works:</p>
+Saves a lot of typing. This is an example of how the with-partition function works.</p>
 </td><td class="codes"><pre class="brush: clojure">(def bank-data 
   (c/with-partition :db.part/user #{:db/id :account/bank} 
     [{:bank/bic   &quot;BANK_0&quot; :db/id -1000}
@@ -3126,11 +3129,12 @@ of accounts per currency.</p>
        (println &quot;Parent: &quot; parent)
        (println &quot;  Children:&quot; children))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#matomic.core" name="matomic.core"><h1 class="project-name">matomic.core</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>This namespace contains functions to simplify programmatic declaration
 of Datomic entities.</p>
-</td><td class="codes"><pre class="brush: clojure">(ns matomic.core)</pre></td></tr><tr><td class="docs"><p>Marco that returns a function that binds a parition
+</td><td class="codes"><pre class="brush: clojure">(ns matomic.core
+    (use [datomic.api :only [tempid]]))</pre></td></tr><tr><td class="docs"><p>Marco that returns a function that binds a parition
    identified by partition-ident to the Datomic tempid function.</p>
 </td><td class="codes"><pre class="brush: clojure">(defmacro bind-partition
   [partition-ident]
-  `(partial datomic.api/tempid ~partition-ident))</pre></td></tr><tr><td class="docs"><p>If the map m contains the key in the key set s
+  `(partial tempid ~partition-ident))</pre></td></tr><tr><td class="docs"><p>If the map m contains the key in the key set s
    then the value is replaced with the return value
    of applying f to the value.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn assoc-when
@@ -3159,7 +3163,8 @@ of Datomic entities.</p>
   <code>(with-doc "A test attribute")</code> <br />
   <code>(with-unique-index :db.unique/value)</code> <br />
   <code>(with-fulltext))</code>  </p>
-</td><td class="codes"><pre class="brush: clojure">(ns matomic.schema)</pre></td></tr><tr><td class="docs"><p>Macro that returns a rudimentary Datomic schema map.
+</td><td class="codes"><pre class="brush: clojure">(ns matomic.schema
+    (use [datomic.api :only [db]]))</pre></td></tr><tr><td class="docs"><p>Macro that returns a rudimentary Datomic schema map.
    Each Datomic schema entity that you wish to store in Datomic
    should at least have a unique identity and unique id 
    (in the db partition). And that's what this macro returns.</p>
