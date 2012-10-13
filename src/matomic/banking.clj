@@ -5,18 +5,20 @@
     (:require [matomic.schema :as s])
     (:require [matomic.core :as c]))
 
-;; The database URI. It seems sensible to name the database to the context that it will be used in.
-;; In my case, that's the manegement of bank accounts. 
-(def uri "datomic:mem://banking")
-
-;; Now create the database from the uri. In a real application you'll have a persistent database so
-;; normally the database is created only once. However, an in-memory database always needs to be re-created. 
-(d/create-database uri)
+;; I stole this function from the day of Datomic github project.
+;; It's handy for creating an in-memory scratch databaase for experimenting.
+(defn scratch-db
+  "Returns a connection to a scratch database"
+  []
+  (let [uri (str "datomic:mem://" (d/squuid))]
+    (d/delete-database uri)
+    (d/create-database uri)
+    (d/connect uri)))
 
 ;; OK, database is up and running. Now get a connection to the database. Of course, when dealing with a persistent
 ;; (non in-memory) database logon creadentials will be required to get a connection. I've not discivered documentation
 ;; on how to do that yet on the Datomic web-site though.
-(def conn (d/connect uri))
+(def conn (scratch-db))
 
 ;; Get the transaction report queue. I'm not using this at the moment, but I would like to explore the possibillities
 ;; of this queue. Need to read some more about it.
@@ -35,6 +37,8 @@
 ;;
 ;; NOTE: Just found out that in the real world it is quite normal to have an account for multiple
 ;; currencies, so I might need to reconsider my data model ....
+;; For now I have created a balance entity and added it as an atttibute (of cardinality many) 
+;; to the account, but kept the currency attribute as well.
 (def schema [
  (-> (s/defattr :currency/iso-code :db.type/string)
      (s/with-unique-index :db.unique/value)
@@ -47,9 +51,15 @@
  (-> (s/defattr :account/id :db.type/string)
      (s/with-doc "The account identification code"))
  (-> (s/defattr :account/currency :db.type/ref)
-     (s/with-doc "The currency of the account's balance"))
+     (s/with-doc "The primary currency of the account"))
+ (-> (s/defattr :account/balance :db.type/ref :db.cardinality/many)
+     (s/with-doc "The balances of the account"))
  (-> (s/defattr :account/bank :db.type/ref)
      (s/with-doc "The bank where the account is registered"))
+ (-> (s/defattr :balance/amount :db.type/bigdec)
+     (s/with-doc "The amount of the balance"))
+ (-> (s/defattr :balance/currency :db.type/ref)
+     (s/with-doc "The currency of the balance"))
  (-> (s/defattr :account-holder/account :db.type/ref :db.cardinality/many)
      (s/with-doc "The accounts owned by the account-holder"))
  (-> (s/defattr :company/name :db.type/string)
@@ -76,9 +86,10 @@
 ;; value. The with-partition function will map the id to #db/id[:db.part/user id].
 ;; Saves a lot of typing. This is an example of how the with-partition function works.
 (def bank-data 
-  (c/with-partition :db.part/user #{:db/id :account/bank} 
-    [{:bank/bic   "BANK_0" :db/id -1000}
-     {:account/id "ACCT_0" :db/id -1001 :account/bank -1000 :account/currency :currency/EUR}
+  (c/with-partition :db.part/user #{:db/id :account/bank :account/balance} 
+    [{:bank/bic   "BANK_0"  :db/id -1000}
+     {:balance/amount 0.00M :db/id -2000 :balance/currency :currency/EUR}
+     {:account/id "ACCT_0"  :db/id -1001 :account/bank -1000 :account/currency :currency/EUR :account/balance -2000}
      {:account/id "ACCT_1" :db/id -1002 :account/bank -1000 :account/currency :currency/JPY}]))
 @(d/transact conn bank-data)
  

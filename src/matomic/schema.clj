@@ -8,8 +8,7 @@
 ;;   `(with-fulltext))`  
 ;;
 (ns matomic.schema
-    (use [datomic.api :only [db]])
-    )
+    (use [datomic.api :only [db]]))
 
 (defmacro defentity
   "Macro that returns a rudimentary Datomic schema map.

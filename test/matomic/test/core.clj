@@ -12,5 +12,7 @@
     [0]          {0 :zap 1 :bar 2 :baz} 
     [1]          {0 :foo 1 :zap 2 :baz} 
     [2]          {0 :foo 1 :bar 2 :zap} 
-    [0 1]        {0 :zap 1 :zap 2 :baz})
+    #{3}         {0 :foo 1 :bar 2 :baz}
+    #{0 1}       {0 :zap 1 :zap 2 :baz}
+    #{0 1 2}     {0 :zap 1 :zap 2 :zap})
 

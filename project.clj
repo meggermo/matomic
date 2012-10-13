@@ -12,6 +12,6 @@
   :profiles
   {:dev {:dependencies
          ;; lein-midje --lazytest requires this dependency
-         [[com.stuartsierra/lazytest "1.2.3"]]
+         [[midje "1.4.0"] [com.stuartsierra/lazytest "1.2.3"]]
          :repositories  {"stuart" "http://stuartsierra.com/maven2"}}}
 )
