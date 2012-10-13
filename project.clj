@@ -13,5 +13,8 @@
   {:dev {:dependencies
          ;; lein-midje --lazytest requires this dependency
          [[midje "1.4.0"] [com.stuartsierra/lazytest "1.2.3"]]
-         :repositories  {"stuart" "http://stuartsierra.com/maven2"}}}
+         :repositories  {"stuart" "http://stuartsierra.com/maven2"}
+         :plugins
+         [[lein-midje "2.0.0-SNAPSHOT"]]
+         }}
 )
