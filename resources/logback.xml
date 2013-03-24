@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true" scan="true" scanPeriod="10 seconds">
-	
+
     <!-- prevent per-message overhead for jul logging calls, e.g. Hornet -->
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
@@ -36,7 +36,7 @@
     <logger name="com.amazonaws" level="INFO"/>
     <logger name="com.amazonaws.request" level="WARN"/>
     <logger name="sun.rmi" level="INFO"/>
-    
+
     <root level="ALL">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>

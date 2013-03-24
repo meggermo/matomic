@@ -15,9 +15,8 @@
     (d/create-database uri)
     (d/connect uri)))
 
-;; OK, database is up and running. Now get a connection to the database. Of course, when dealing with a persistent
-;; (non in-memory) database logon creadentials will be required to get a connection. I've not discivered documentation
-;; on how to do that yet on the Datomic web-site though.
+;; Get a connection to the database by calling the utility function. Of course, when dealing with a persistent
+;; (non in-memory) database logon credentials will be required to get a connection, but that's for another time.
 (def conn (scratch-db))
 
 ;; Get the transaction report queue. I'm not using this at the moment, but I would like to explore the possibillities

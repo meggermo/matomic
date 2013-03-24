@@ -38,7 +38,9 @@
     (-> a
       (with-doc "test")
       (with-unique-index "test")
-      (with-fulltext)) => (contains {:db/doc "test" :db/unique "test" :db/index true :db/fulltext true})
-    )
-  )
+      (with-fulltext)) => (contains {
+                  :db/doc "test" 
+                  :db/unique "test" 
+                  :db/index true 
+                  :db/fulltext true})))
 
